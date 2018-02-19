@@ -1,0 +1,8 @@
+name: ProfessionMaster
+version: 0.1.0
+author: RhAnjiE
+main: me.rhanjie.ProfessionMaster.Main
+
+commands:
+  lvl:
+    description: Base for plugin commands
