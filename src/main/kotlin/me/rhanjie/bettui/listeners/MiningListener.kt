@@ -16,12 +16,13 @@ class MiningListener: Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     fun onDestroyBlock(event: BlockBreakEvent): Boolean {
         if(event.player.gameMode == GameMode.SURVIVAL) {
-            val level = (Main.access.usersCache).checkLevel(UsersCache.Specializations.MINING, (event.player.uniqueId).toString(), event.player.name)
-            val needPickaxeLevel = (Main.access.config).getInt("mining.${event.player.inventory.itemInMainHand.type.name.toLowerCase()}.level")
             val needMineralLevel = (Main.access.config).getInt("mining.${(event.block.type).toString().toLowerCase()}.needLevel")
+            val needPickaxeLevel = (Main.access.config).getInt("mining.${event.player.inventory.itemInMainHand.type.name.toLowerCase()}.level")
 
-            if(/*needPickaxeLevel == 0 || */needMineralLevel == 0)
+            if(needMineralLevel == 0)
                 return false
+
+            val level = (Main.access.usersCache).getUser((event.player.uniqueId).toString(), event.player.name).miningLevel
 
             if(level < needPickaxeLevel || level < needMineralLevel){
                 event.isCancelled = true

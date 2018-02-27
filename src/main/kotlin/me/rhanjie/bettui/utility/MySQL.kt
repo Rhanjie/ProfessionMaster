@@ -172,6 +172,7 @@ class MySQL constructor(var ip: String, var port: Int, var login: String, var pa
         try { connection = DriverManager.getConnection("jdbc:mysql://$ip:$port?user=$login&password=$password") }
         catch (exception: SQLException) {
             Bukkit.getConsoleSender().sendMessage(FileManager.get("mySQL.connectionProblem"))
+            Bukkit.getPluginManager().disablePlugin(Main.access)
 
             return false
         }

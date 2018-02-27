@@ -23,28 +23,26 @@ class UsersCache constructor(val database: MySQL) {
         }
     }
 
-    fun updatePlayer(uuid: String, user: User){
-        database.updatePlayer(uuid, user)
+    fun getUser(uuid: String, name: String): User{
+        this.checkPlayer(uuid, name)
+
+        return users.get(uuid)!!
     }
 
     fun addExp(specializations: Specializations, amount: Int, uuid: String, name: String){
-        this.checkPlayer(uuid, name)
+        val user = this.getUser(uuid, name)
 
         when (specializations) {
-            Specializations.MINING -> users.get(uuid)!!.miningExp += amount
+            Specializations.MINING -> user.miningExp += amount
             //... TODO
         }
 
-        if(this.serveLevel(specializations, uuid, users.get(uuid)!!))
-            this.updatePlayer(uuid, users.get(uuid)!!)
+        if(this.serveLevel(specializations, uuid, user))
+            this.updatePlayer(uuid, user)
     }
 
-    fun checkLevel(specializations: Specializations, uuid: String, name: String): Int{
-        this.checkPlayer(uuid, name)
-
-        when (specializations) {
-            Specializations.MINING -> return users.get(uuid)!!.miningLevel
-        }
+    fun updatePlayer(uuid: String, user: User){
+        database.updatePlayer(uuid, user)
     }
 
     fun resetPlayer(uuid: String){
@@ -80,8 +78,8 @@ class UsersCache constructor(val database: MySQL) {
 
         when(specializations) {
             Specializations.MINING -> {
-                while(user.miningExp >= user.miningLevel * 100){
-                    user.miningExp -= user.miningLevel * 100
+                while(user.miningExp >= user.miningLevel * (Main.access.config).getInt("nextLevelExp")){
+                    user.miningExp -= user.miningLevel * (Main.access.config).getInt("nextLevelExp")
                     user.miningLevel++
 
                     this.updatePlayer(uuid, user)

@@ -17,7 +17,7 @@ class Main: JavaPlugin() {
 
     lateinit var usersCache: UsersCache
     val PLUGIN_NAME = "ProfessionMaster"
-    val PLUGIN_VERSION = "0.1 Public"
+    val PLUGIN_VERSION = "0.2 Public"
     val PLUGIN_INFO = this.getPluginInformation()
 
     override fun onEnable() {
@@ -42,6 +42,7 @@ class Main: JavaPlugin() {
     }
 
     private fun registerCommands() {
+        this.getCommand("level").executor = InfoCommand()
         this.getCommand("lvl").executor = InfoCommand()
     }
     private fun registerListeners() {
@@ -54,11 +55,11 @@ class Main: JavaPlugin() {
     /* Modifications to this method are not allowed! */
     private fun getPluginInformation(): String{
         val text = StringBuilder()
-            text.append("§f--------------------------                 \n")
+            text.append("§f--------------------------------------     \n")
             text.append("§f§lPlugin name: §6${PLUGIN_NAME}            \n")
             text.append("§f§lPlugin version: §6${PLUGIN_VERSION}      \n")
             text.append("§f§lPlugin author: §6Marcin (RhAnjiE) Dyla   \n")
-            text.append("§f--------------------------                 \n")
+            text.append("§f--------------------------------------     \n")
 
         return text.toString()
     }
