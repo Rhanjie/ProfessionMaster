@@ -17,7 +17,7 @@ class Main: JavaPlugin() {
 
     lateinit var usersCache: UsersCache
     val PLUGIN_NAME = "ProfessionMaster"
-    val PLUGIN_VERSION = "0.2 Public"
+    val PLUGIN_VERSION = "0.2.1 Public"
     val PLUGIN_INFO = this.getPluginInformation()
 
     override fun onEnable() {
