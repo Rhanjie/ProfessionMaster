@@ -35,36 +35,39 @@ class InfoCommand: CommandExecutor {
         if(sender.hasPermission("ProfessionMaster.listOfSkills")) {
             val nextLevelExp = (Main.access.config).getInt("nextLevelExp")
 
-            if (sender is Player) {
-                val user = Main.access.usersCache.getUser(sender.uniqueId.toString(), sender.name)
-
-                if (args!!.size == 0) {
-                    val text = StringBuilder()
-                        text.append("§f-----------------[ ${FileManager.get("words.skills")} ]-----------------\n")
-                        text.append("§f§l${FileManager.get("words.mining")}:")
-                        text.append( " §f${FileManager.get("words.level")} §6${user.miningLevel},")
-                        text.append( " §f${FileManager.get("words.exp")} §6${user.miningExp},")
-                        text.append( " §f${FileManager.get("words.newLevel")} §6${user.miningLevel * nextLevelExp}\n")
-                    //TODO - More professions
-
-                    sender.sendMessage(text.toString())
-                } else {
-                    when (args[0]) {
-                        "mining" -> sender.sendMessage("§f§l${FileManager.get("words.mining")}:\n" +
-                                "§f- ${FileManager.get("words.level")}: §6${user.miningLevel}\n" +
-                                "§f- ${FileManager.get("words.exp")}: §6${user.miningExp}\n" +
-                                "§f- ${FileManager.get("words.newLevel")}: §6${user.miningLevel * nextLevelExp}\n")
-                        //TODO - More professions
-
-                        else -> sender.sendMessage(FileManager.get("user.incorrectArgument"))
-                    }
-                }
-
-                return true
-            } else {
+            if(sender !is Player){
                 sender.sendMessage(FileManager.get("admin.consolePermissionNull"))
+
                 return false
             }
+
+            val user = Main.access.usersCache.getUser(sender.uniqueId.toString(), sender.name)
+
+            val mining      = FileManager.get("words.mining")
+            val level       = FileManager.get("words.level")
+            val exp         = FileManager.get("words.exp")
+            val newLevel    = FileManager.get("words.newLevel")
+
+            if (args!!.size == 0) {
+                val text = StringBuilder()
+                    text.append("§f-----------------[ ${FileManager.get("words.skills")} ]-----------------\n")
+                    text.append("§f§l$mining: §f$level §6${user.miningLevel}, §f$exp §6${user.miningExp}, §f$newLevel §6${user.miningLevel * nextLevelExp}\n")
+                //TODO - More professions
+
+                sender.sendMessage(text.toString())
+            } else {
+                when (args[0]) {
+                    "mining" -> sender.sendMessage("§f§l$mining:\n" +
+                                                   "§f- $level: §6${user.miningLevel}\n" +
+                                                   "§f- $exp: §6${user.miningExp}\n" +
+                                                   "§f- $newLevel: §6${user.miningLevel * nextLevelExp}\n")
+
+                    //TODO - More professions
+                    else -> sender.sendMessage(FileManager.get("user.incorrectArgument"))
+                }
+            }
+
+            return true
         }
 
         sender.sendMessage(FileManager.get("user.permissionNull"))
@@ -73,9 +76,27 @@ class InfoCommand: CommandExecutor {
 
     private fun toplistCommand(sender: CommandSender, args: Array<out String>?): Boolean{
         if(sender.hasPermission("ProfessionMaster.toplist")) {
-            //TODO
+            if (args!!.size == 0) {
+                sender.sendMessage(FileManager.get("user.incorrectArgument"))
 
-            //SELECT * FROM users GROUP BY miningLevel;
+                return false
+            }
+
+            var users = hashMapOf<String, Int>()
+            val limit: Int = try{ args[1].toInt() }
+            catch (exception: NumberFormatException){ 5 }
+
+            when(args[0]){
+                "mining" -> users = Main.access.usersCache.database.getTopRecords("miningLevel", limit)
+                //TODO: Other professions
+            }
+
+            val text = StringBuilder()
+                text.append("§f-----------------[ ${FileManager.get("words.skills")} ]-----------------\n")
+
+            var i = 1
+            for(it in users)
+                text.append("§f[${i++}] §l§6${it.key}§f = ${it.value}")
 
             return true
         }

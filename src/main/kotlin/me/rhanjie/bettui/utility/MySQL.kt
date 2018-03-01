@@ -110,6 +110,30 @@ class MySQL constructor(var ip: String, var port: Int, var login: String, var pa
         return true
     }
 
+    fun getTopRecords(columnName: String, limit: Int): HashMap<String, Int>{
+        var users = hashMapOf<String, Int>()
+
+        if(!this.openConnection())
+            return users
+
+        var builder = StringBuilder()
+            builder.append("SELECT `name`, `$columnName` FROM users GROUP BY `$columnName` DESC LIMIT 5;")
+
+        try {
+            var result = connection.createStatement().executeQuery(builder.toString())
+
+            while(result.next()){
+                users.put(result.getString("name"), result.getInt(columnName))
+            }
+        }
+        catch (exception: SQLException) {
+            Bukkit.getConsoleSender().sendMessage("${FileManager.get("mySQL.queryProblem")}")
+        }
+
+        this.closeConnection()
+        return users
+    }
+
     fun resetPlayer(uuid: String): Boolean{
         if(!this.openConnection())
             return false
