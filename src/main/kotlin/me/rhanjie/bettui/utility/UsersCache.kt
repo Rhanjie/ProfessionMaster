@@ -94,10 +94,7 @@ class UsersCache constructor(val database: MySQL) {
     }
     private fun addPlayerToCache(uuid: String, name: String){
         val user = User()
-
-        user.name = name
-        user.miningLevel = 1
-        user.miningExp = 0
+            user.name = name
 
         users.put(uuid, user)
     }

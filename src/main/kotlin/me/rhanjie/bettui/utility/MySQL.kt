@@ -49,32 +49,32 @@ class MySQL constructor(var ip: String, var port: Int, var login: String, var pa
 
         for(user in users){
             var builder = StringBuilder()
-                builder.append("INSERT INTO users (uuid, name, miningLevel, miningExp, woodcuttingLevel, woodcuttingExp," +
+                builder.append("INSERT INTO users (uuid, name, miningLevel, miningExp, woodcuttingLevel, woodcuttingExp, " +
                                "gatheringLevel, gatheringExp, farmingLevel, farmingExp, combatLevel, combatExp) VALUES (")
                 builder.append("'${user.key}',")
-                builder.append("'${user.value.name}',")
-                builder.append("'${user.value.miningLevel}',")
-                builder.append("'${user.value.miningExp}',")
-                builder.append("'${user.value.woodcuttingLevel}',")
-                builder.append("'${user.value.woodcuttingExp}',")
-                builder.append("'${user.value.gatheringLevel}',")
-                builder.append("'${user.value.gatheringExp}',")
-                builder.append("'${user.value.farmingLevel}',")
-                builder.append("'${user.value.farmingExp}',")
-                builder.append("'${user.value.combatLevel}',")
-                builder.append("'${user.value.combatExp}')")
+                builder.append("'${user.value.name}', ")
+                builder.append("'${user.value.miningLevel}', ")
+                builder.append("'${user.value.miningExp}', ")
+                builder.append("'${user.value.woodcuttingLevel}', ")
+                builder.append("'${user.value.woodcuttingExp}', ")
+                builder.append("'${user.value.gatheringLevel}', ")
+                builder.append("'${user.value.gatheringExp}', ")
+                builder.append("'${user.value.farmingLevel}', ")
+                builder.append("'${user.value.farmingExp}', ")
+                builder.append("'${user.value.combatLevel}', ")
+                builder.append("'${user.value.combatExp}') ")
 
                 builder.append("ON DUPLICATE KEY UPDATE ")
-                builder.append("miningLevel='${      user.value.miningLevel}',")
-                builder.append("miningExp='${        user.value.miningExp}',")
-                builder.append("woodcuttingLevel='${ user.value.woodcuttingLevel}',")
-                builder.append("woodcuttingExp='${   user.value.woodcuttingExp}',")
-                builder.append("gatheringLevel='${   user.value.gatheringLevel}',")
-                builder.append("gatheringExp='${     user.value.gatheringExp}',")
-                builder.append("farmingLevel='${     user.value.farmingLevel}',")
-                builder.append("farmingExp='${       user.value.farmingExp}',")
-                builder.append("combatLevel='${      user.value.combatLevel}',")
-                builder.append("combatExp='${        user.value.combatExp}',")
+                builder.append("miningLevel='${      user.value.miningLevel}', ")
+                builder.append("miningExp='${        user.value.miningExp}', ")
+                builder.append("woodcuttingLevel='${ user.value.woodcuttingLevel}', ")
+                builder.append("woodcuttingExp='${   user.value.woodcuttingExp}', ")
+                builder.append("gatheringLevel='${   user.value.gatheringLevel}', ")
+                builder.append("gatheringExp='${     user.value.gatheringExp}', ")
+                builder.append("farmingLevel='${     user.value.farmingLevel}', ")
+                builder.append("farmingExp='${       user.value.farmingExp}', ")
+                builder.append("combatLevel='${      user.value.combatLevel}', ")
+                builder.append("combatExp='${        user.value.combatExp}';")
 
             connection.createStatement().executeUpdate(builder.toString())
         }
@@ -100,8 +100,8 @@ class MySQL constructor(var ip: String, var port: Int, var login: String, var pa
 
             val user = User()
                 user.name               = result.getString("name")
-                user.miningLevel        = result.getInt("MiningLevel")
-                user.miningExp          = result.getInt("MiningExp")
+                user.miningLevel        = result.getInt("miningLevel")
+                user.miningExp          = result.getInt("miningExp")
                 user.woodcuttingLevel   = result.getInt("farmingLevel")
                 user.woodcuttingExp     = result.getInt("farmingExp")
                 user.gatheringLevel     = result.getInt("gatheringLevel")
@@ -116,6 +116,7 @@ class MySQL constructor(var ip: String, var port: Int, var login: String, var pa
         }
         catch (exception: SQLException) {
             Bukkit.getConsoleSender().sendMessage("${FileManager.get("mySQL.queryProblem")}")
+            //exception.printStackTrace()
 
             this.closeConnection()
             return null
@@ -127,11 +128,18 @@ class MySQL constructor(var ip: String, var port: Int, var login: String, var pa
             return false
 
         var builder = StringBuilder()
-            builder.append("UPDATE users SET name='${user.name}', miningLevel='${user.miningLevel}', miningExp='${user.miningExp}' WHERE uuid='${uuid}'")
+            builder.append("UPDATE users SET name='${user.name}', ")
+            builder.append("miningLevel='${          user.miningLevel}', miningExp='${           user.miningExp}', ")
+            builder.append("woodcuttingLevel='${     user.woodcuttingLevel}', woodcuttingExp='${ user.woodcuttingExp}', ")
+            builder.append("gatheringLevel='${       user.gatheringLevel}', gatheringExp='${     user.gatheringExp}', ")
+            builder.append("farmingLevel='${         user.farmingLevel}', farmingLevel='${       user.farmingLevel}', ")
+            builder.append("combatLevel='${          user.combatLevel}', combatExp='${           user.combatExp}' ")
+            builder.append("WHERE uuid='${uuid}'")
 
         try{connection.createStatement().executeUpdate(builder.toString())}
         catch(exception: SQLException){
             Bukkit.getConsoleSender().sendMessage("${FileManager.get("mySQL.updateProblem")}")
+            exception.printStackTrace()
 
             this.closeConnection()
             return false
@@ -159,6 +167,7 @@ class MySQL constructor(var ip: String, var port: Int, var login: String, var pa
         }
         catch (exception: SQLException) {
             Bukkit.getConsoleSender().sendMessage("${FileManager.get("mySQL.queryProblem")}")
+            //exception.printStackTrace()
         }
 
         this.closeConnection()
@@ -170,12 +179,18 @@ class MySQL constructor(var ip: String, var port: Int, var login: String, var pa
             return false
 
         var builder = StringBuilder()
-            builder.append("UPDATE users SET miningLevel='1', miningExp='0' WHERE uuid='$uuid'")
-        //TODO - Here need fill specializations
+            builder.append("UPDATE users SET")
+            builder.append("miningLevel='1', miningExp='0', ")
+            builder.append("woodcuttingLevel='1', woodcuttingExp='0', ")
+            builder.append("gatheringLevel='1', gatheringExp='0', ")
+            builder.append("farmingLevel='1', farmingLevel='0', ")
+            builder.append("combatLevel='1', combatExp='0', ")
+            builder.append("WHERE uuid='$uuid'")
 
         try{connection.createStatement().executeUpdate(builder.toString())}
         catch(exception: SQLException){
             Bukkit.getConsoleSender().sendMessage("${FileManager.get("mySQL.updateProblem")}")
+            //exception.printStackTrace()
 
             this.closeConnection()
             return false
@@ -247,9 +262,6 @@ class MySQL constructor(var ip: String, var port: Int, var login: String, var pa
 
         builder.append("woodcuttingLevel INT(5) NOT NULL,")
         builder.append("woodcuttingExp INT(100) NOT NULL,")
-
-        builder.append("miningLevel INT(5) NOT NULL,")
-        builder.append("miningExp INT(100) NOT NULL,")
 
         builder.append("gatheringLevel INT(5) NOT NULL,")
         builder.append("gatheringExp INT(100) NOT NULL,")
