@@ -34,8 +34,6 @@ class FileManager {
 
             this.createDefaultConfigIfNotExist()
             this.createDefaultMessagesIfNotExist()
-
-            this.loadValues()
         }
 
         private fun createDefaultConfigIfNotExist(){
@@ -78,29 +76,23 @@ class FileManager {
             messages.addDefault("user.undefinedComm",           "§cNiepoprawna komenda!")
             messages.addDefault("user.nickNotExist",            "§cGracz o podanym nicku nie istnieje!")
             messages.addDefault("user.permissionNull",          "§cNie posiadasz uprawnien do wykonania tej akcji!")
+            messages.addDefault("user.notEnoughArguments",      "§cZbyt malo argumentow!")
             messages.addDefault("user.incorrectArgument",       "§cNieprawidlowy argument!")
             messages.addDefault("user.notEnoughLevel",          "§cPosiadasz zbyt niski poziom, aby wykonac te akcje!")
             messages.addDefault("user.miningNewLevel",          "§aUzyskales nowy poziom w gornictwie!")
 
             messages.addDefault("words.skills",                 "Zdolnosci")
-            messages.addDefault("words.mining",                 "Gornictwo")
             messages.addDefault("words.newLevel",               "Nowy poziom")
             messages.addDefault("words.level",                  "Poziom")
             messages.addDefault("words.exp",                    "Doswiadczenie")
+            messages.addDefault("words.mining",                 "Gornictwo")
+            messages.addDefault("words.woodcutting",            "Lesnictwo")
+            messages.addDefault("words.gathering",              "Zbieractwo")
+            messages.addDefault("words.farming",                "Farmerstwo")
+            messages.addDefault("words.combat",                 "Walka")
 
             messages.save(messagesFile)
 
-        }
-
-        private fun loadValues(){
-            /*Main.language = (Main.access.config).getString("language")
-            if(Main.language != "en_EN" && Main.language != "pl_PL") {
-                Bukkit.getConsoleSender().sendMessage("§9[${Main.access.PLUGIN_NAME}] §cIncorrect language! Set default")
-
-                Main.language = "en_EN"
-            }*/
-
-            //messages = YamlConfiguration.loadConfiguration(messagesFile)
         }
     }
 }

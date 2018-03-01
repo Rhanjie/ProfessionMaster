@@ -43,26 +43,48 @@ class InfoCommand: CommandExecutor {
 
             val user = Main.access.usersCache.getUser(sender.uniqueId.toString(), sender.name)
 
-            val mining      = FileManager.get("words.mining")
             val level       = FileManager.get("words.level")
             val exp         = FileManager.get("words.exp")
             val newLevel    = FileManager.get("words.newLevel")
+            val mining      = FileManager.get("words.mining")
+            val woodcutting = FileManager.get("words.woodcutting")
+            val gathering   = FileManager.get("words.gathering")
+            val farming     = FileManager.get("words.farming")
+            val combat      = FileManager.get("words.combat")
 
             if (args!!.size == 0) {
                 val text = StringBuilder()
                     text.append("§f-----------------[ ${FileManager.get("words.skills")} ]-----------------\n")
                     text.append("§f§l$mining: §f$level §6${user.miningLevel}, §f$exp §6${user.miningExp}, §f$newLevel §6${user.miningLevel * nextLevelExp}\n")
-                //TODO - More professions
+                    text.append("§f§l$woodcutting: §f$level §6${user.woodcuttingLevel}, §f$exp §6${user.woodcuttingExp}, §f$newLevel §6${user.woodcuttingLevel * nextLevelExp}\n")
+                    text.append("§f§l$gathering: §f$level §6${user.gatheringLevel}, §f$exp §6${user.gatheringExp}, §f$newLevel §6${user.gatheringLevel * nextLevelExp}\n")
+                    text.append("§f§l$farming: §f$level §6${user.farmingLevel}, §f$exp §6${user.farmingExp}, §f$newLevel §6${user.farmingLevel * nextLevelExp}\n")
+                    text.append("§f§l$combat: §f$level §6${user.combatLevel}, §f$exp §6${user.combatExp}, §f$newLevel §6${user.combatLevel * nextLevelExp}\n")
 
                 sender.sendMessage(text.toString())
             } else {
                 when (args[0]) {
-                    "mining" -> sender.sendMessage("§f§l$mining:\n" +
-                                                   "§f- $level: §6${user.miningLevel}\n" +
-                                                   "§f- $exp: §6${user.miningExp}\n" +
-                                                   "§f- $newLevel: §6${user.miningLevel * nextLevelExp}\n")
-
-                    //TODO - More professions
+                    "mining", "m" -> sender.sendMessage(
+                            "§f§l$mining:\n" +
+                            "§f- $level: §6${user.miningLevel}\n" +
+                            "§f- $exp: §6${user.miningExp}\n" +
+                            "§f- $newLevel: §6${user.miningLevel * nextLevelExp}\n")
+                    "woodcutting", "w" -> sender.sendMessage("§f§l$mining:\n" +
+                            "§f- $level: §6${user.woodcuttingLevel}\n" +
+                            "§f- $exp: §6${user.woodcuttingExp}\n" +
+                            "§f- $newLevel: §6${user.woodcuttingLevel * nextLevelExp}\n")
+                    "gathering", "g" -> sender.sendMessage("§f§l$mining:\n" +
+                            "§f- $level: §6${user.gatheringLevel}\n" +
+                            "§f- $exp: §6${user.gatheringExp}\n" +
+                            "§f- $newLevel: §6${user.gatheringLevel * nextLevelExp}\n")
+                    "farming", "f" -> sender.sendMessage("§f§l$mining:\n" +
+                            "§f- $level: §6${user.farmingLevel}\n" +
+                            "§f- $exp: §6${user.farmingExp}\n" +
+                            "§f- $newLevel: §6${user.farmingLevel * nextLevelExp}\n")
+                    "combat", "c" -> sender.sendMessage("§f§l$mining:\n" +
+                            "§f- $level: §6${user.combatLevel}\n" +
+                            "§f- $exp: §6${user.combatExp}\n" +
+                            "§f- $newLevel: §6${user.combatLevel * nextLevelExp}\n")
                     else -> sender.sendMessage(FileManager.get("user.incorrectArgument"))
                 }
             }
@@ -77,7 +99,7 @@ class InfoCommand: CommandExecutor {
     private fun toplistCommand(sender: CommandSender, args: Array<out String>?): Boolean{
         if(sender.hasPermission("ProfessionMaster.toplist")) {
             if (args!!.size == 0) {
-                sender.sendMessage(FileManager.get("user.incorrectArgument"))
+                sender.sendMessage(FileManager.get("user.notEnoughArguments"))
 
                 return false
             }
@@ -85,19 +107,32 @@ class InfoCommand: CommandExecutor {
             var users = hashMapOf<String, Int>()
             val limit: Int = try{ args[1].toInt() }
             catch (exception: NumberFormatException){ 5 }
+            var columnName = ""
 
             when(args[0]){
-                "mining" -> users = Main.access.usersCache.database.getTopRecords("miningLevel", limit)
-                //TODO: Other professions
+                "mining",       "m" -> columnName = "miningLevel"
+                "woodcutting",  "w" -> columnName = "woodcuttingLevel"
+                "gathering",    "g" -> columnName = "gatheringLevel"
+                "farming",      "f" -> columnName = "farmingLevel"
+                "combat",       "c" -> columnName = "combatLevel"
             }
 
-            val text = StringBuilder()
-                text.append("§f-----------------[ ${FileManager.get("words.skills")} ]-----------------\n")
+            if(columnName == ""){
+                sender.sendMessage(FileManager.get("user.incorrectArgument"))
+
+                return false
+            }
+
+            users = Main.access.usersCache.database.getTopRecords(columnName, limit)
 
             var i = 1
+            val text = StringBuilder()
+                text.append("§f-----------------[ ${args[0]} ]-----------------\n")
+
             for(it in users)
                 text.append("§f[${i++}] §l§6${it.key}§f = ${it.value}")
 
+            sender.sendMessage(text.toString())
             return true
         }
 

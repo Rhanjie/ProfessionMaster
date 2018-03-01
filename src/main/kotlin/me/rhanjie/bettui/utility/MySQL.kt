@@ -25,10 +25,17 @@ class MySQL constructor(var ip: String, var port: Int, var login: String, var pa
         var result = connection.createStatement().executeQuery("SELECT * FROM users")
         while(result.next()){
             val user = User()
-                user.name = result.getString("name")
-                user.miningLevel = result.getInt("miningLevel")
-                user.miningExp = result.getInt("miningExp")
-            //TODO - Here need fill specializations
+                user.name               = result.getString("name")
+                user.miningLevel        = result.getInt("miningLevel")
+                user.miningExp          = result.getInt("miningExp")
+                user.woodcuttingLevel   = result.getInt("farmingLevel")
+                user.woodcuttingExp     = result.getInt("farmingExp")
+                user.gatheringLevel     = result.getInt("gatheringLevel")
+                user.gatheringExp       = result.getInt("gatheringExp")
+                user.farmingLevel       = result.getInt("farmingLevel")
+                user.farmingExp         = result.getInt("farmingExp")
+                user.combatLevel        = result.getInt("combatLevel")
+                user.combatExp          = result.getInt("combatExp")
 
             users.put(result.getString("uuid"), user)
         }
@@ -42,15 +49,32 @@ class MySQL constructor(var ip: String, var port: Int, var login: String, var pa
 
         for(user in users){
             var builder = StringBuilder()
-                builder.append("INSERT INTO users (uuid, name, miningLevel, miningExp) VALUES (")
+                builder.append("INSERT INTO users (uuid, name, miningLevel, miningExp, woodcuttingLevel, woodcuttingExp," +
+                               "gatheringLevel, gatheringExp, farmingLevel, farmingExp, combatLevel, combatExp) VALUES (")
                 builder.append("'${user.key}',")
                 builder.append("'${user.value.name}',")
                 builder.append("'${user.value.miningLevel}',")
-                builder.append("'${user.value.miningExp}')")
+                builder.append("'${user.value.miningExp}',")
+                builder.append("'${user.value.woodcuttingLevel}',")
+                builder.append("'${user.value.woodcuttingExp}',")
+                builder.append("'${user.value.gatheringLevel}',")
+                builder.append("'${user.value.gatheringExp}',")
+                builder.append("'${user.value.farmingLevel}',")
+                builder.append("'${user.value.farmingExp}',")
+                builder.append("'${user.value.combatLevel}',")
+                builder.append("'${user.value.combatExp}')")
+
                 builder.append("ON DUPLICATE KEY UPDATE ")
-                builder.append("miningLevel='${user.value.miningLevel}',")
-                builder.append("miningExp='${user.value.miningExp}'")
-            //TODO - Here need fill specializations
+                builder.append("miningLevel='${      user.value.miningLevel}',")
+                builder.append("miningExp='${        user.value.miningExp}',")
+                builder.append("woodcuttingLevel='${ user.value.woodcuttingLevel}',")
+                builder.append("woodcuttingExp='${   user.value.woodcuttingExp}',")
+                builder.append("gatheringLevel='${   user.value.gatheringLevel}',")
+                builder.append("gatheringExp='${     user.value.gatheringExp}',")
+                builder.append("farmingLevel='${     user.value.farmingLevel}',")
+                builder.append("farmingExp='${       user.value.farmingExp}',")
+                builder.append("combatLevel='${      user.value.combatLevel}',")
+                builder.append("combatExp='${        user.value.combatExp}',")
 
             connection.createStatement().executeUpdate(builder.toString())
         }
@@ -75,10 +99,17 @@ class MySQL constructor(var ip: String, var port: Int, var login: String, var pa
             }
 
             val user = User()
-                user.name = result.getString("name")
-                user.miningLevel = result.getInt("MiningLevel")
-                user.miningExp = result.getInt("MiningExp")
-            //TODO - Here need fill specializations
+                user.name               = result.getString("name")
+                user.miningLevel        = result.getInt("MiningLevel")
+                user.miningExp          = result.getInt("MiningExp")
+                user.woodcuttingLevel   = result.getInt("farmingLevel")
+                user.woodcuttingExp     = result.getInt("farmingExp")
+                user.gatheringLevel     = result.getInt("gatheringLevel")
+                user.gatheringExp       = result.getInt("gatheringExp")
+                user.farmingLevel       = result.getInt("farmingLevel")
+                user.farmingExp         = result.getInt("farmingExp")
+                user.combatLevel        = result.getInt("combatLevel")
+                user.combatExp          = result.getInt("combatExp")
 
             this.closeConnection()
             return user
@@ -117,7 +148,7 @@ class MySQL constructor(var ip: String, var port: Int, var login: String, var pa
             return users
 
         var builder = StringBuilder()
-            builder.append("SELECT `name`, `$columnName` FROM users GROUP BY `$columnName` DESC LIMIT 5;")
+            builder.append("SELECT `name`, `$columnName` FROM users GROUP BY `$columnName` DESC LIMIT $limit;")
 
         try {
             var result = connection.createStatement().executeQuery(builder.toString())
@@ -202,7 +233,7 @@ class MySQL constructor(var ip: String, var port: Int, var login: String, var pa
         }
 
         var builder = StringBuilder()
-        builder.append("CREATE DATABASE IF NOT EXISTS ProfessionMaster;")
+            builder.append("CREATE DATABASE IF NOT EXISTS ProfessionMaster;")
 
         connection.createStatement().executeUpdate(builder.toString())
 
@@ -210,10 +241,25 @@ class MySQL constructor(var ip: String, var port: Int, var login: String, var pa
         builder.append("CREATE TABLE IF NOT EXISTS ProfessionMaster.users(")
         builder.append("uuid VARCHAR(100) NOT NULL,")
         builder.append("name VARCHAR(50) NOT NULL,")
+
         builder.append("miningLevel INT(5) NOT NULL,")
         builder.append("miningExp INT(100) NOT NULL,")
+
+        builder.append("woodcuttingLevel INT(5) NOT NULL,")
+        builder.append("woodcuttingExp INT(100) NOT NULL,")
+
+        builder.append("miningLevel INT(5) NOT NULL,")
+        builder.append("miningExp INT(100) NOT NULL,")
+
+        builder.append("gatheringLevel INT(5) NOT NULL,")
+        builder.append("gatheringExp INT(100) NOT NULL,")
+
+        builder.append("farmingLevel INT(5) NOT NULL,")
+        builder.append("farmingExp INT(100) NOT NULL,")
+
+        builder.append("combatLevel INT(5) NOT NULL,")
+        builder.append("combatExp INT(100) NOT NULL,")
         builder.append("PRIMARY KEY(uuid));")
-        //TODO - Here need fill specializations
 
         connection.createStatement().executeUpdate(builder.toString())
 
